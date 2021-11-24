@@ -26,7 +26,7 @@ deploy:
   # The image to be used as the base for this job
   image:
     name: gcr.io/k8s-skaffold/skaffold:v1.15.0
-  stage: stage 3
+  stage: stage3
   retry: 2
   script:
     # Logging in to our gcp account using the service account key (specified in GITLAB variables)
