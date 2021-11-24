@@ -4,6 +4,7 @@ const app = require("../src/index");
 
 const request = require("supertest");
 
+//fr
 const bodyObj = {
   email: "test@test.com",
   password: "123443",
