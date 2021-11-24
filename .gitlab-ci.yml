@@ -8,10 +8,13 @@ image: node:alpine
 build:
   stage: stage1
   script:
+    - cd auth
     - yarn install
     - yarn build
 
 test:
   stage: stage2
   script:
+    - cd auth
+    - yarn install
     - yarn test
