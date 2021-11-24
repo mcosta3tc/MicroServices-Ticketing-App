@@ -4,6 +4,7 @@ stages:
   - stage3
 
 image: node:alpine
+  i
 
 build:
   stage: stage1

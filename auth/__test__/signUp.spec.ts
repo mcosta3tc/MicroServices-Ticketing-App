@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-const app = require("../src/index");
+const app = require("../src/app");
 
 const request = require("supertest");
 
