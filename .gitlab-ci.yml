@@ -29,7 +29,7 @@ deploy:
   retry: 2
   script:
     # Logging in to our gcp account using the service account key (specified in GITLAB variables)
-    - echo "$GCP_DEV_SERVICE_KEY" > gcloud-service-key.json
+    - echo "$GCP_DEV_SERVICE_KEY" | base64 -d > gcloud-service-key.json
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
     # Specifying the project, zone, cluster to deploy our application in.
     - gcloud config set project $PROJECT_DEV_NAME
