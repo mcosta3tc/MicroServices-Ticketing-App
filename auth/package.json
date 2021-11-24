@@ -11,12 +11,19 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
-    "start": "ts-node-dev --poll src/index.ts"
+    "dev": "ts-node-dev --poll src/index.ts",
+    "start": "node index.js",
+    "build": "tsc",
+    "test": "jest"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.3.0",
-    "prettier": "^2.4.1"
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
+    "supertest": "^6.1.6",
+    "ts-jest": "^27.0.7"
   }
 }

@@ -1,0 +1,17 @@
+stages:
+  - stage1
+  - stage2
+  - stage3
+
+image: node:alpine
+
+build:
+  stage: stage1
+  script:
+    - yarn install
+    - yarn build
+
+test:
+  stage: stage2
+  script:
+    - yarn test
