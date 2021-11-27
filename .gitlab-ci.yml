@@ -39,7 +39,7 @@ deploy:
     - echo $PROJECT_DEV_NAME
     - echo $PROJECT_DEV_REGION
     - echo $CLUSTER_DEV_NAME
-      # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
-      - skaffold run
+    # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
+    - skaffold run
     only:
       - main
