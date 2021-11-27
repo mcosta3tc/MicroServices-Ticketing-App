@@ -24,7 +24,7 @@ test:
 deploy:
   # The image to be used as the base for this job
   image:
-    name: gcr.io/k8s-skaffold/skaffold:v1.15.0
+    name: gcr.io/k8s-skaffold/skaffold:latest
   stage: stage3
   retry: 2
   script:
@@ -39,11 +39,7 @@ deploy:
     - echo $PROJECT_DEV_NAME
     - echo $PROJECT_DEV_REGION
     - echo $CLUSTER_DEV_NAME
-    # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
-    - DOCKER_HOST="$DIND_DEV" NPM_REGISTRY="$NPM_REGISTRY_DEV" NPM_TOKEN="$NPM_TOKEN_DEV" skaffold run
-    - --tails=true --kube-context $CLUSTER_DEV_CONTEXT -n default -l skaffold.dev/run-id=deploydep -p dev-svc
-    - --status-check
-  only:
-    # Run this only for changes in the main branch
-    refs:
+      # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
+      - skaffold run
+    only:
       - main
