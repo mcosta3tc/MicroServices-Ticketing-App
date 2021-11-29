@@ -35,9 +35,7 @@ deploy:
     - gcloud config set project $PROJECT_DEV_NAME
     - gcloud config set compute/zone $PROJECT_DEV_REGION
     - gcloud container clusters get-credentials $CLUSTER_DEV_NAME
-    - kubectl config get-contexts
-    - yarn build
-    # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
+    - kubectl config get-contexts    # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
     - skaffold run
   only:
     # Run this only for changes in the main branch
