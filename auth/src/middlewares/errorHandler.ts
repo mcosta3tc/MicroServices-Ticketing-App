@@ -3,8 +3,7 @@
  * Besides it's a rudy MS error, express MS error, spring MS ,db error
  */
 import { Request, Response, NextFunction } from "express";
-import { RequestValidationError } from "../errors/requestValidationError";
-import { DatabaseConnectionError } from "../errors/databaseConnectionError";
+import { CustomError } from "../errors/customError";
 
 //Express knows it's an error MiddleWare (= 4 params)
 export const errorHandler = (
@@ -16,14 +15,15 @@ export const errorHandler = (
   /**
    * consistently error msg
    */
-  if (err instanceof RequestValidationError) {
-    console.log("Handling this error a RequestValidationError");
-  }
-  if (err instanceof DatabaseConnectionError) {
-    console.log("Handling this error a DatabaseConnectionError");
+  if (err instanceof CustomError) {
+    return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
 
   res.status(200).send({
-    message: err.message,
+    errors: [
+      {
+        message: "Something went wrong",
+      },
+    ],
   });
 };
