@@ -27,8 +27,8 @@ pre-deploy:
     - yarn build
   variables:
     NODE_ENV: "production"
-  cache:
-    key: "auth_build_dir"
+  artifacts:
+    name: "auth_build_dir"
     paths:
       - ./auth/dist
 
@@ -42,8 +42,8 @@ deploy:
   stage: stage3
   retry: 2
   needs: [ "pre-deploy" ]
-  cache:
-    key: "auth_build_dir"
+  dependencies:
+    - pre-deploy
   script:
     - ls -lR
     # Logging in to our gcp account using the service account key (specified in GITLAB variables)
