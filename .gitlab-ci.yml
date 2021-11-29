@@ -1,60 +1,3 @@
-stages:
-  - stage1
-  - stage2
-  - stage3
-
-image: node:alpine
-
-build:
-  stage: stage1
-  cache:
-    paths:
-      - ./auth/node_modules/
-  script:
-    - cd auth
-    - yarn install
-
-
-test:
-  stage: stage2
-  cache:
-    paths:
-      - ./auth/node_modules/
-  script:
-    - cd auth
-    - yarn install
-    - yarn test
-
-.pre-deploy:
-  stage: stage3
-  script:
-    - env
-    - cd $SKA_PROFILE
-    - yarn install
-    - yarn build
-  variables:
-    NODE_ENV: "production"
-
-
-pre-deploy:
-  extends: .pre-deploy
-  variables:
-    SKA_PROFILE: auth
-  artifacts:
-    name: "auth_build_dir"
-    paths:
-      - ./auth/dist
-
-pre-deploy-auth_2:
-  extends: .pre-deploy
-  variables:
-    SKA_PROFILE: auth_2
-  artifacts:
-    name: "auth_2_build_dir"
-    paths:
-      - ./auth_2/dist
-
-  # The name of the job
 .deploy:
   # The image to be used as the base for this job
   image:
@@ -76,6 +19,60 @@ pre-deploy-auth_2:
     # Run this only for changes in the main branch
     refs:
       - main
+
+.pre-deploy:
+  stage: stage3
+  script:
+    - env
+    - cd $SKA_PROFILE
+    - yarn install
+    - yarn build
+  variables:
+    NODE_ENV: "production"
+
+stages:
+  - stage1
+  - stage2
+  - stage3
+
+image: node:alpine
+
+build:
+  stage: stage1
+  cache:
+    paths:
+      - ./auth/node_modules/
+  script:
+    - cd auth
+    - yarn install
+
+test:
+  stage: stage2
+  cache:
+    paths:
+      - ./auth/node_modules/
+  script:
+    - cd auth
+    - yarn install
+    - yarn test
+
+pre-deploy:
+  extends: .pre-deploy
+  variables:
+    SKA_PROFILE: auth
+  artifacts:
+    name: "auth_build_dir"
+    paths:
+      - ./auth/dist
+
+pre-deploy-auth_2:
+  extends: .pre-deploy
+  variables:
+    SKA_PROFILE: auth_2
+  artifacts:
+    name: "auth_2_build_dir"
+    paths:
+      - ./auth_2/dist
 
 deploy_auth:
   extends: .deploy
