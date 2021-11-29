@@ -3,10 +3,11 @@ kind: Config
 deploy:
   kubectl:
     manifests:
-      - ./infra/k8s/*
+      - ./infra/k8s/auth-depl.yml
+      - ./infra/k8s/ingress-srv.yaml
 build:
-#  local:
-#    push: false
+  #  local:
+  #    push: false
   googleCloudBuild:
     projectId: ticketing-dev-332916
   artifacts:
@@ -18,3 +19,17 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+
+profiles:
+  - name: auth
+  - name: auth_2
+    patches:
+      - op: replace
+        path: /build/artifacts/0/image
+        value: us.gcr.io/ticketing-dev-332916/auth_2
+      - op: replace
+        path: /build/artifacts/0/context
+        value: auth_2
+      - op: replace
+        path: /deploy/kubectl/manifests/0
+        value: ./infra/k8s/auth_2-depl.yml

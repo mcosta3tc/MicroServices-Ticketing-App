@@ -25,31 +25,42 @@ test:
     - yarn install
     - yarn test
 
-pre-deploy:
+.pre-deploy:
   stage: stage3
   script:
-    - cd auth
+    - env
+    - cd $SKA_PROFILE
     - yarn install
     - yarn build
   variables:
     NODE_ENV: "production"
+
+
+pre-deploy:
+  extends: .pre-deploy
+  variables:
+    SKA_PROFILE: auth
   artifacts:
     name: "auth_build_dir"
     paths:
       - ./auth/dist
 
-
+pre-deploy-auth_2:
+  extends: .pre-deploy
+  variables:
+    SKA_PROFILE: auth_2
+  artifacts:
+    name: "auth_2_build_dir"
+    paths:
+      - ./auth_2/dist
 
   # The name of the job
-deploy:
+.deploy:
   # The image to be used as the base for this job
   image:
     name: gcr.io/k8s-skaffold/skaffold:v1.15.0
   stage: stage3
   retry: 2
-  needs: [ "pre-deploy" ]
-  dependencies:
-    - pre-deploy
   script:
     # Logging in to our gcp account using the service account key (specified in GITLAB variables)
     - echo "$GCP_DEV_SERVICE_KEY" | base64 -d > gcloud-service-key.json
@@ -60,8 +71,22 @@ deploy:
     - gcloud container clusters get-credentials $CLUSTER_DEV_NAME
     - kubectl config get-contexts    # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
     - export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcloud-service-key.json
-    - skaffold run
+    - skaffold run -p $SKA_PROFILE
   only:
     # Run this only for changes in the main branch
     refs:
       - main
+
+deploy_auth:
+  extends: .deploy
+  variables:
+    SKA_PROFILE: "auth"
+  dependencies:
+    - pre-deploy
+
+deploy_auth2:
+  extends: .deploy
+  variables:
+    SKA_PROFILE: "auth_2"
+  dependencies:
+    - pre-deploy-auth_2
