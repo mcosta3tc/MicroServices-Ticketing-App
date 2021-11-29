@@ -6,6 +6,6 @@ COPY package.json .
 
 RUN yarn install
 
-COPY ./dist .
+COPY . .
 
-CMD ["yarn", "start"]
+CMD ["yarn", "dev"]
