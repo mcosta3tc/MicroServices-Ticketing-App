@@ -19,14 +19,31 @@ test:
     - yarn install
     - yarn test
 
+pre-deploy:
+  stage: stage3
+  script:
+    - cd auth
+    - yarn install
+    - yarn build
+  variables:
+    NODE_ENV: "production"
+  cache:
+    key: "auth_build_dir"
+    paths:
+      - ./auth/dist
 
-    # The name of the job
+
+
+  # The name of the job
 deploy:
   # The image to be used as the base for this job
   image:
     name: gcr.io/k8s-skaffold/skaffold:v1.15.0
   stage: stage3
   retry: 2
+  needs: [ "pre-deploy" ]
+  cache:
+    key: "auth_build_dir"
   script:
     # Logging in to our gcp account using the service account key (specified in GITLAB variables)
     - echo "$GCP_DEV_SERVICE_KEY" | base64 -d > gcloud-service-key.json
