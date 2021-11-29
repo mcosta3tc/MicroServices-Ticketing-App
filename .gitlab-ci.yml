@@ -45,6 +45,7 @@ deploy:
   cache:
     key: "auth_build_dir"
   script:
+    - ls -lR
     # Logging in to our gcp account using the service account key (specified in GITLAB variables)
     - echo "$GCP_DEV_SERVICE_KEY" | base64 -d > gcloud-service-key.json
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
