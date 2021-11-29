@@ -7,13 +7,19 @@ image: node:alpine
 
 build:
   stage: stage1
+  cache:
+    paths:
+      - ./auth/node_modules/
   script:
     - cd auth
     - yarn install
-    - yarn build
+
 
 test:
   stage: stage2
+  cache:
+    paths:
+      - ./auth/node_modules/
   script:
     - cd auth
     - yarn install
@@ -45,7 +51,6 @@ deploy:
   dependencies:
     - pre-deploy
   script:
-    - ls -lR
     # Logging in to our gcp account using the service account key (specified in GITLAB variables)
     - echo "$GCP_DEV_SERVICE_KEY" | base64 -d > gcloud-service-key.json
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
@@ -54,6 +59,7 @@ deploy:
     - gcloud config set compute/zone $PROJECT_DEV_REGION
     - gcloud container clusters get-credentials $CLUSTER_DEV_NAME
     - kubectl config get-contexts    # Pass in all the environment variables to be passed to skaffold during build and deployment with all the args as documented in https://skaffold.dev/docs/references/cli/ (in our case our cluster context, env vars, namespace and some labels)
+    - export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcloud-service-key.json
     - skaffold run
   only:
     # Run this only for changes in the main branch
