@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Password } from "../services/password";
 
 /**
  * describes properties required to create a new User => TS's type checking
@@ -35,6 +36,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+});
+
+/**
+ * fn keywrd => to refer to 'this' => user in doc !== this of user.ts with an arrow fn
+ * done => handling await cause mongoose don't
+ */
+userSchema.pre("save", async function (done) {
+  /**
+   * hash the password if only it has been modified
+   */
+  if (this.isModified("password")) {
+    const hashed = await Password.toHash(this.get("password"));
+    this.set("password", hashed);
+  }
+
+  done();
 });
 
 /**
