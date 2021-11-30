@@ -1,7 +1,7 @@
 import express, { Response, Request } from "express";
 import { body, validationResult } from "express-validator";
 import { RequestValidationError } from "../errors/requestValidationError";
-import { DatabaseConnectionError } from "../errors/databaseConnectionError";
+import { User } from "../models/user";
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.post(
       })
       .withMessage("Password must be between 4 and 20 characters"),
   ],
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     // catch validations errors in the request
     const errors = validationResult(req);
 
@@ -27,12 +27,21 @@ router.post(
       //return the errors obj as array of errors ==> sent as json data
       throw new RequestValidationError(errors.array());
     }
-    console.log("Creating a user...");
+
     const { email, password } = req.body;
 
-    throw new DatabaseConnectionError();
+    const existingUser = await User.findOne({ email });
 
-    res.send({ email, password });
+    if (existingUser) {
+      console.log("email in use");
+      return res.send({});
+    }
+
+    const user = User.build({ email, password });
+
+    await user.save();
+
+    res.status(201).send(user);
   }
 );
 
