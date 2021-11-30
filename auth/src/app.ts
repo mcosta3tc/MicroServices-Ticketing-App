@@ -17,7 +17,7 @@ app.use(signOutRouter);
 app.use(signUpRouter);
 
 //Not found route
-app.all("*", async () => {
+app.all("*", async (req, res) => {
   throw new NotFoundError();
 });
 

@@ -1,20 +1,18 @@
-apiVersion: skaffold/v2alpha3
+apiVersion: skaffold/v2beta22
 kind: Config
+build:
+  artifacts:
+    - image: us.gcr.io/ticketing-dev-332916/auth
+      context: auth
+      sync:
+        manual:
+          - src: src/**/*.ts
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+  googleCloudBuild:
+    projectId: ticketing-dev-332916
 deploy:
   kubectl:
     manifests:
       - ./infra/k8s/*
-build:
-  #  local:
-  #    push: false
-  googleCloudBuild:
-    projectId: ticketing-dev-332916
-  artifacts:
-    - image: us.gcr.io/ticketing-dev-332916/auth
-      context: auth
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/**/*.ts'
-            dest: .
