@@ -9,6 +9,7 @@ export abstract class CustomError extends Error {
 
   constructor(message: string) {
     super(message);
+    // bcz extending a class existing in JS
     Object.setPrototypeOf(this, CustomError.prototype);
   }
 
