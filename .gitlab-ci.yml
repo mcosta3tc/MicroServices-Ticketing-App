@@ -65,25 +65,9 @@ pre-deploy:
     paths:
       - ./auth/dist
 
-pre-deploy-auth_2:
-  extends: .pre-deploy
-  variables:
-    SKA_PROFILE: auth_2
-  artifacts:
-    name: "auth_2_build_dir"
-    paths:
-      - ./auth_2/dist
-
 deploy_auth:
   extends: .deploy
   variables:
     SKA_PROFILE: "auth"
   dependencies:
     - pre-deploy
-
-deploy_auth2:
-  extends: .deploy
-  variables:
-    SKA_PROFILE: "auth_2"
-  dependencies:
-    - pre-deploy-auth_2
